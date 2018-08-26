@@ -1,6 +1,4 @@
 pub struct Camera {
-    pub x: i32,
-    pub y: i32,
-    pub z: i32,
+    pub position: ::position::Position,
     pub direction: ::direction::Direction,
 }

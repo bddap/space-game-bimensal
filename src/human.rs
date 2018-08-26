@@ -8,13 +8,7 @@ impl Human {
     pub fn display(&self, world: &::world::World) {
         println!("hello world");
     }
-    pub fn input(&self) -> Input {
-        Input::Quit
+    pub fn input(&self) -> ::input::Input {
+        ::input::Input::Quit
     }
-}
-
-pub enum Input {
-    None,
-    Direction(::direction::Direction),
-    Quit,
 }
