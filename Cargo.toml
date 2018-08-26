@@ -4,18 +4,3 @@ version = "0.1.0"
 authors = ["Andrew Dirksen <andrew@dirksen.com>"]
 
 [dependencies]
-piston_window = "0.80.0"
-vecmath = "0.3.0"
-camera_controllers = "0.24.0"
-gfx = "0.17.1"
-shader_version = "0.3.0"
-# piston3d-gfx_voxel = "0.25.0"
-
-# find_folder = "0.3.0"
-# piston-ai_behavior = "0.24.0"
-# piston2d-sprite = "0.45.0"
-# image = "0.19.0"
-# piston2d-drag_controller = "0.22.0"
-# gfx_device_gl = "0.15.0"
-# rand = "0.5.0"
-
