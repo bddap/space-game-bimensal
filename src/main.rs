@@ -23,5 +23,6 @@ fn main() {
             input::Input::None => {}
         }
         human.display(&world);
+        world.update();
     }
 }

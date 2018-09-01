@@ -10,4 +10,8 @@ impl World {
             self.viewport.position = proposed_position
         }
     }
+
+    pub fn update(&mut self) {
+        self.space.update()
+    }
 }

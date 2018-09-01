@@ -4,3 +4,4 @@ version = "0.1.0"
 authors = ["Andrew Dirksen <andrew@dirksen.com>"]
 
 [dependencies]
+dubble = "0.1.0"
