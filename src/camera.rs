@@ -1,4 +1,5 @@
+#[derive(Debug)]
 pub struct Camera {
     pub position: ::position::Position,
-    pub direction: ::direction::Direction,
+    pub orientation: ::orientation::Orientation,
 }

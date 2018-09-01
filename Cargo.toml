@@ -5,3 +5,6 @@ authors = ["Andrew Dirksen <andrew@dirksen.com>"]
 
 [dependencies]
 dubble = "0.1.0"
+three = "0.3.1"
+mint = "0.5.0"
+cgmath = "0.16.1"

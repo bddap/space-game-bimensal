@@ -1,6 +1,6 @@
 use std::ops::Add;
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Debug)]
 pub struct Position {
     pub x: i32,
     pub y: i32,
@@ -14,7 +14,7 @@ impl Add for Position {
         Position {
             x: self.x + other.x,
             y: self.y + other.y,
-            z: self.y + other.z,
+            z: self.z + other.z,
         }
     }
 }
