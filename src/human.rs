@@ -85,10 +85,12 @@ impl Human {
             Some(three::controls::Key::X) => ::input::Input::Move(::direction::Direction::Down),
             Some(three::controls::Key::L) => ::input::Input::Turn(::direction::Direction::North),
             Some(three::controls::Key::K) => ::input::Input::Turn(::direction::Direction::South),
-            Some(three::controls::Key::Colon) => ::input::Input::Turn(::direction::Direction::East),
+            Some(three::controls::Key::Semicolon) => {
+                ::input::Input::Turn(::direction::Direction::East)
+            }
             Some(three::controls::Key::J) => ::input::Input::Turn(::direction::Direction::West),
-            Some(three::controls::Key::Period) => ::input::Input::Turn(::direction::Direction::Up),
-            Some(three::controls::Key::Comma) => ::input::Input::Turn(::direction::Direction::Down),
+            Some(three::controls::Key::Comma) => ::input::Input::Turn(::direction::Direction::Up),
+            Some(three::controls::Key::M) => ::input::Input::Turn(::direction::Direction::Down),
             Some(three::controls::Key::Q) => ::input::Input::Quit,
             _ => ::input::Input::None,
         }
