@@ -9,6 +9,7 @@ pub struct Human {
     camera: three::camera::Camera,
     cubes: Vec<three::Mesh>,
     input: VecDeque<three::controls::Key>,
+    sprites: Sprites,
 }
 
 impl Human {
@@ -44,20 +45,24 @@ impl Human {
         }
 
         Human {
-            window,
             camera,
             cubes,
             input: VecDeque::new(),
+            sprites: Sprites::load(&mut window),
+            window,
         }
     }
 
     pub fn display(&mut self, world: &::world::World) {
         for (index, cube) in self.cubes.iter_mut().enumerate() {
-            cube.set_material(material(world.space.get_voxel(::position::Position {
-                x: index as i32 / 16 / 16,
-                y: index as i32 / 16 % 16,
-                z: index as i32 % 16,
-            })));
+            cube.set_material(material(
+                world.space.get_voxel(::position::Position {
+                    x: index as i32 / 16 / 16,
+                    y: index as i32 / 16 % 16,
+                    z: index as i32 % 16,
+                }),
+                &self.sprites,
+            ));
         }
         self.camera.set_position([
             world.viewport.position.x as f32,
@@ -70,9 +75,9 @@ impl Human {
     }
 
     pub fn input(&mut self) -> ::input::Input {
-        use ::input::Input::{Move, Turn};
-        use direction::Direction;
         use self::three::controls;
+        use direction::Direction;
+        use input::Input::{Move, Turn};
 
         for key in self.window.input.keys_hit().iter() {
             self.input.push_back(*key)
@@ -97,12 +102,26 @@ impl Human {
     }
 }
 
-fn material(voxel: ::voxel::Voxel) -> three::Material {
+struct Sprites {
+    asteroid: three::material::Material, // three::Texture<[f32; 4]>,
+}
+
+impl Sprites {
+    fn load(window: &mut three::Window) -> Sprites {
+        use std::path::Path;
+        let assets = Path::new(env!("CARGO_MANIFEST_DIR")).join("assets");
+        Sprites {
+            asteroid: three::material::Basic {
+                color: 0x555555,
+                map: Some(window.factory.load_texture(assets.join("asteroid.png"))),
+            }.into(),
+        }
+    }
+}
+
+fn material(voxel: ::voxel::Voxel, sprites: &Sprites) -> three::Material {
     match voxel {
-        ::voxel::Voxel::Asteroid => three::material::Lambert {
-            color: 0x8080ff,
-            flat: false,
-        }.into(),
+        ::voxel::Voxel::Asteroid => sprites.asteroid.clone(),
         ::voxel::Voxel::Vacuum => three::material::Wireframe { color: 0x408055 }.into(),
     }
 }

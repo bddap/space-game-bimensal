@@ -2,7 +2,7 @@ extern crate dubble;
 use self::dubble::DoubleBuffered;
 
 pub struct Space {
-    pub chunk: DoubleBuffered<[[[::voxel::Voxel; 16]; 16]; 16]>,
+    chunk: DoubleBuffered<[[[::voxel::Voxel; 16]; 16]; 16]>,
 }
 
 impl Space {
