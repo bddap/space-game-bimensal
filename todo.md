@@ -1,5 +1,5 @@
 [x] camera rotation
-[ ] movent controls operate in local space
+[x] movent controls operate in local space
 [ ] hide vacuum blocks
 [ ] sprites
 [ ] voxel combinator
