@@ -7,6 +7,7 @@ mod position;
 mod space;
 mod voxel;
 mod world;
+mod turn;
 
 fn main() {
     let mut world = world::World {

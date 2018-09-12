@@ -33,7 +33,7 @@ impl Into<::direction::Direction> for Orientation {
             Orientation {
                 vertical: VerticalOrientation::Down,
                 ..
-            } => ::direction::Direction::Up,
+            } => ::direction::Direction::Down,
             Orientation {
                 vertical: VerticalOrientation::Center,
                 horizontal,
@@ -44,6 +44,13 @@ impl Into<::direction::Direction> for Orientation {
                 HorizontalOrientation::West => ::direction::Direction::West,
             },
         }
+    }
+}
+
+impl Into<::position::Position> for Orientation {
+    fn into(self) -> ::position::Position {
+        let d: ::direction::Direction = self.into();
+        d.into()
     }
 }
 
@@ -76,27 +83,55 @@ fn to_cgmath(a: mint::Quaternion<f32>) -> cgmath::Quaternion<f32> {
 
 impl Orientation {
     pub fn turn(&self, direction: ::direction::Direction) -> Self {
-        use direction::Direction;
-        let vertical = match (self.vertical, direction) {
-            (_, ::direction::Direction::North) => VerticalOrientation::Center,
-            (VerticalOrientation::Up, Direction::Up) => VerticalOrientation::Up,
-            (VerticalOrientation::Up, Direction::Down) => VerticalOrientation::Center,
-            (VerticalOrientation::Center, Direction::Up) => VerticalOrientation::Up,
-            (VerticalOrientation::Center, Direction::Down) => VerticalOrientation::Down,
-            (VerticalOrientation::Down, Direction::Up) => VerticalOrientation::Center,
-            (VerticalOrientation::Down, Direction::Down) => VerticalOrientation::Down,
-            (s, _) => s,
-        };
-        let hdirection = match direction {
-            Direction::North | Direction::Up | Direction::Down => HorizontalOrientation::North,
-            Direction::South => HorizontalOrientation::South,
-            Direction::East => HorizontalOrientation::East,
-            Direction::West => HorizontalOrientation::West,
-        };
-
         Self {
-            vertical,
-            horizontal: hdirection + self.horizontal,
+            vertical: self.vertical + direction.into(),
+            horizontal: self.horizontal + direction.into(),
+        }
+    }
+}
+
+impl From<::direction::Direction> for VerticalOrientation {
+    fn from(other: ::direction::Direction) -> VerticalOrientation {
+        use self::VerticalOrientation as V;
+        use direction::Direction as D;
+        match other {
+            D::Down => V::Down,
+            D::Up => V::Up,
+            D::North => V::Center,
+            D::West => V::Center,
+            D::East => V::Center,
+            D::South => V::Center,
+        }
+    }
+}
+
+impl From<::direction::Direction> for HorizontalOrientation {
+    fn from(other: ::direction::Direction) -> HorizontalOrientation {
+        use self::HorizontalOrientation as H;
+        use direction::Direction as D;
+        match other {
+            D::Down => H::North,
+            D::Up => H::North,
+            D::North => H::North,
+            D::West => H::West,
+            D::East => H::East,
+            D::South => H::South,
+        }
+    }
+}
+
+impl Add for VerticalOrientation {
+    type Output = Self;
+    fn add(self, other: VerticalOrientation) -> Self::Output {
+        use self::VerticalOrientation as V;
+        match (self, other) {
+            (V::Up, V::Down) => V::Center,
+            (V::Down, V::Up) => V::Center,
+            (V::Up, _) => V::Up,
+            (_, V::Up) => V::Up,
+            (V::Center, a) => a,
+            (a, V::Center) => a,
+            (V::Down, V::Down) => V::Down,
         }
     }
 }
@@ -104,36 +139,27 @@ impl Orientation {
 impl Add for HorizontalOrientation {
     type Output = Self;
     fn add(self, other: HorizontalOrientation) -> Self::Output {
+        use self::HorizontalOrientation as H;
         match (self, other) {
-            (HorizontalOrientation::North, other) => other,
-            (slef, HorizontalOrientation::North) => slef,
-            (HorizontalOrientation::East, HorizontalOrientation::East) => {
-                HorizontalOrientation::South
-            }
-            (HorizontalOrientation::East, HorizontalOrientation::West) => {
-                HorizontalOrientation::North
-            }
-            (HorizontalOrientation::East, HorizontalOrientation::South) => {
-                HorizontalOrientation::West
-            }
-            (HorizontalOrientation::West, HorizontalOrientation::West) => {
-                HorizontalOrientation::South
-            }
-            (HorizontalOrientation::West, HorizontalOrientation::South) => {
-                HorizontalOrientation::East
-            }
-            (HorizontalOrientation::South, HorizontalOrientation::South) => {
-                HorizontalOrientation::North
-            }
-            (HorizontalOrientation::West, HorizontalOrientation::East) => {
-                HorizontalOrientation::North
-            }
-            (HorizontalOrientation::South, HorizontalOrientation::East) => {
-                HorizontalOrientation::West
-            }
-            (HorizontalOrientation::South, HorizontalOrientation::West) => {
-                HorizontalOrientation::East
-            }
+            (H::North, other) => other,
+            (slef, H::North) => slef,
+            (H::East, H::East) => H::South,
+            (H::East, H::West) => H::North,
+            (H::East, H::South) => H::West,
+            (H::West, H::West) => H::South,
+            (H::West, H::South) => H::East,
+            (H::South, H::South) => H::North,
+            (H::West, H::East) => H::North,
+            (H::South, H::East) => H::West,
+            (H::South, H::West) => H::East,
         }
     }
 }
+
+// impl Orientation {
+//     fn turn(&self, other: ::turn::Turn) -> Orientation {
+//         use turn::Turn;
+//         let vertical = match (self.vertical, other) {};
+//         // let horizontal = ;
+//     }
+// }

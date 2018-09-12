@@ -70,6 +70,10 @@ impl Human {
     }
 
     pub fn input(&mut self) -> ::input::Input {
+        use ::input::Input::{Move, Turn};
+        use direction::Direction;
+        use self::three::controls;
+
         for key in self.window.input.keys_hit().iter() {
             self.input.push_back(*key)
         }
@@ -77,21 +81,17 @@ impl Human {
         let inp = self.input.pop_front();
 
         match inp {
-            Some(three::controls::Key::D) => ::input::Input::Move(::direction::Direction::North),
-            Some(three::controls::Key::S) => ::input::Input::Move(::direction::Direction::South),
-            Some(three::controls::Key::F) => ::input::Input::Move(::direction::Direction::East),
-            Some(three::controls::Key::A) => ::input::Input::Move(::direction::Direction::West),
-            Some(three::controls::Key::C) => ::input::Input::Move(::direction::Direction::Up),
-            Some(three::controls::Key::X) => ::input::Input::Move(::direction::Direction::Down),
-            Some(three::controls::Key::L) => ::input::Input::Turn(::direction::Direction::North),
-            Some(three::controls::Key::K) => ::input::Input::Turn(::direction::Direction::South),
-            Some(three::controls::Key::Semicolon) => {
-                ::input::Input::Turn(::direction::Direction::East)
-            }
-            Some(three::controls::Key::J) => ::input::Input::Turn(::direction::Direction::West),
-            Some(three::controls::Key::Comma) => ::input::Input::Turn(::direction::Direction::Up),
-            Some(three::controls::Key::M) => ::input::Input::Turn(::direction::Direction::Down),
-            Some(three::controls::Key::Q) => ::input::Input::Quit,
+            Some(controls::Key::D) => Move(Direction::North),
+            Some(controls::Key::S) => Move(Direction::South),
+            Some(controls::Key::F) => Move(Direction::East),
+            Some(controls::Key::A) => Move(Direction::West),
+            Some(controls::Key::C) => Move(Direction::Up),
+            Some(controls::Key::X) => Move(Direction::Down),
+            Some(controls::Key::L) => Turn(Direction::Up),
+            Some(controls::Key::K) => Turn(Direction::Down),
+            Some(controls::Key::Semicolon) => Turn(Direction::East),
+            Some(controls::Key::J) => Turn(Direction::West),
+            Some(controls::Key::Q) => ::input::Input::Quit,
             _ => ::input::Input::None,
         }
     }

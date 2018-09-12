@@ -30,8 +30,8 @@ impl Into<mint::Quaternion<f32>> for Direction {
             Direction::South => [0.0, 0.0, 1.0, 0.0].into(),
             Direction::East => [0.707, 0.0, -0.707, 0.0].into(),
             Direction::West => [0.707, 0.0, 0.707, 0.0].into(),
-            Direction::Up => [0.707, 0.0, 0.0, 0.707].into(),
-            Direction::Down => [0.707, 0.0, 0.0, -0.707].into(),
+            Direction::Up => [0.707, 0.0, 0.0, -0.707].into(),
+            Direction::Down => [0.707, 0.0, 0.0, 0.707].into(),
         }
     }
 }
