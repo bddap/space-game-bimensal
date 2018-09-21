@@ -26,6 +26,13 @@ impl From<[i32; 3]> for Position {
     }
 }
 
+impl Into<[f32; 3]> for Position {
+    fn into(self) -> [f32; 3] {
+        let Position { x, y, z } = self;
+        [x as f32, y as f32, z as f32]
+    }
+}
+
 impl Position {
     // we are sorta defining transfomation matrices here, maybe that will be useful later
     pub fn turn(&self, orientation: ::orientation::Orientation) -> Position {

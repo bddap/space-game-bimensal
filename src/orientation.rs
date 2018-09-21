@@ -1,5 +1,6 @@
 extern crate cgmath;
 extern crate mint;
+extern crate na;
 use std::ops::Add;
 
 #[derive(Debug, Copy, Clone)]
@@ -79,6 +80,16 @@ fn to_mint(a: cgmath::Quaternion<f32>) -> mint::Quaternion<f32> {
 fn to_cgmath(a: mint::Quaternion<f32>) -> cgmath::Quaternion<f32> {
     let a: [f32; 4] = a.into();
     a.into()
+}
+
+impl Into<na::geometry::UnitQuaternion<f32>> for Orientation {
+    fn into(self) -> na::geometry::UnitQuaternion<f32> {
+        let mint: mint::Quaternion<f32> = self.into();
+        let a: [f32; 4] = mint.into();
+        na::geometry::UnitQuaternion::from_quaternion(na::geometry::Quaternion::from_vector(
+            a.into(),
+        )) // what a pain
+    }
 }
 
 impl Orientation {

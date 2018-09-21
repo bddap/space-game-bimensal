@@ -5,9 +5,9 @@ mod input;
 mod orientation;
 mod position;
 mod space;
+mod turn;
 mod voxel;
 mod world;
-mod turn;
 
 fn main() {
     let mut world = world::World {
@@ -23,10 +23,10 @@ fn main() {
     let mut human = human::Human::new();
     loop {
         match human.input() {
-            input::Input::Quit => return,
-            input::Input::Move(direction) => world.move_viewport(direction),
-            input::Input::Turn(direction) => world.turn_viewport(direction),
-            input::Input::None => {}
+            Some(input::Input::Quit) => return,
+            Some(input::Input::Move(direction)) => world.move_viewport(direction),
+            Some(input::Input::Turn(direction)) => world.turn_viewport(direction),
+            None => {}
         }
         human.display(&world);
         world.update();
