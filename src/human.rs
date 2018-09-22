@@ -54,14 +54,21 @@ impl Human {
 
     pub fn display(&mut self, world: &::world::World) {
         for (index, cube) in self.cubes.iter_mut().enumerate() {
-            cube.set_material(material(
+            let material = material(
                 world.space.get_voxel(::position::Position {
                     x: index as i32 / 16 / 16,
                     y: index as i32 / 16 % 16,
                     z: index as i32 % 16,
                 }),
                 &self.sprites,
-            ));
+            );
+            match material {
+                Some(material) => {
+                    cube.set_visible(true);
+                    cube.set_material(material);
+                }
+                None => cube.set_visible(false),
+            }
         }
         self.camera.set_position([
             world.viewport.position.x as f32,
@@ -127,10 +134,10 @@ impl Sprites {
     }
 }
 
-fn material(voxel: ::voxel::Voxel, sprites: &Sprites) -> three::Material {
+fn material(voxel: ::voxel::Voxel, sprites: &Sprites) -> Option<three::Material> {
     match voxel {
-        ::voxel::Voxel::Asteroid => sprites.asteroid.clone(),
-        ::voxel::Voxel::Vacuum => three::material::Wireframe { color: 0x408055 }.into(),
+        ::voxel::Voxel::Asteroid => Some(sprites.asteroid.clone()),
+        ::voxel::Voxel::Vacuum => None,
     }
 }
 
