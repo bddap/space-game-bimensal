@@ -1,5 +1,6 @@
 // An interface to an actual human.
 
+extern crate mint;
 extern crate three;
 use human::three::Object;
 use std::collections::VecDeque;
@@ -17,11 +18,10 @@ impl Human {
         let mut window = three::Window::new("space game bimensal");
         window.scene.background = three::Background::Color(0x204060);
 
-        let camera = window.factory.perspective_camera(60.0, 1.0..100.0);
-        // camera.look_at([-1.8, -8.0, 7.0], [0.0, 0.0, 3.5], None);
+        let camera = window.factory.perspective_camera(60.0, 0.4..100.0);
 
         let light = window.factory.point_light(0xffffff, 1.0);
-        light.set_position([-10.0, -10.0, 32.0]);
+        light.set_position([8.0, 8.0, 11.0]);
         window.scene.add(&light);
 
         let material = three::material::Lambert {
@@ -29,7 +29,7 @@ impl Human {
             flat: false,
         };
 
-        let geometry = three::Geometry::cuboid(1.0, 1.0, 1.0);
+        let geometry = cube_geometry();
 
         let cubes: Vec<three::Mesh> = (0..(16 * 16 * 16))
             .map(|i: i32| (i / 16 / 16, i / 16 % 16, i % 16))
@@ -37,8 +37,7 @@ impl Human {
                 let cube = window.factory.mesh(geometry.clone(), material.clone());
                 cube.set_position([x as f32, y as f32, z as f32]);
                 cube
-            })
-            .collect();
+            }).collect();
 
         for cube in cubes.iter() {
             window.scene.add(cube);
@@ -103,17 +102,26 @@ impl Human {
 }
 
 struct Sprites {
-    asteroid: three::material::Material, // three::Texture<[f32; 4]>,
+    asteroid: three::material::Material,
 }
 
 impl Sprites {
     fn load(window: &mut three::Window) -> Sprites {
         use std::path::Path;
         let assets = Path::new(env!("CARGO_MANIFEST_DIR")).join("assets");
+        let sampler: three::Sampler = window.factory.sampler(
+            three::FilterMethod::Scale,
+            three::WrapMode::Clamp,
+            three::WrapMode::Clamp,
+        );
         Sprites {
             asteroid: three::material::Basic {
-                color: 0x555555,
-                map: Some(window.factory.load_texture(assets.join("asteroid.png"))),
+                color: 0xffffff,
+                map: Some(
+                    window
+                        .factory
+                        .load_texture_with_sampler(assets.join("asteroid.png"), sampler),
+                ),
             }.into(),
         }
     }
@@ -123,5 +131,288 @@ fn material(voxel: ::voxel::Voxel, sprites: &Sprites) -> three::Material {
     match voxel {
         ::voxel::Voxel::Asteroid => sprites.asteroid.clone(),
         ::voxel::Voxel::Vacuum => three::material::Wireframe { color: 0x408055 }.into(),
+    }
+}
+
+fn cube_geometry() -> three::Geometry {
+    use self::mint::{Point2, Point3, Vector3};
+    use self::three::{Geometry, Joints, Shape};
+
+    let blue = Point2 { x: 0.0, y: 0.0 };
+    let red = Point2 { x: 1.0, y: 1.0 };
+    let purple = Point2 { x: 0.0, y: 1.0 };
+    let green = Point2 { x: 1.0, y: 0.0 };
+
+    Geometry {
+        base: Shape {
+            vertices: vec![
+                Point3 {
+                    x: 0.5,
+                    y: 0.5,
+                    z: -0.5,
+                },
+                Point3 {
+                    x: 0.5,
+                    y: 0.5,
+                    z: 0.5,
+                },
+                Point3 {
+                    x: 0.5,
+                    y: -0.5,
+                    z: 0.5,
+                },
+                Point3 {
+                    x: 0.5,
+                    y: -0.5,
+                    z: -0.5,
+                },
+                Point3 {
+                    x: -0.5,
+                    y: -0.5,
+                    z: -0.5,
+                },
+                Point3 {
+                    x: -0.5,
+                    y: -0.5,
+                    z: 0.5,
+                },
+                Point3 {
+                    x: -0.5,
+                    y: 0.5,
+                    z: 0.5,
+                },
+                Point3 {
+                    x: -0.5,
+                    y: 0.5,
+                    z: -0.5,
+                },
+                Point3 {
+                    x: -0.5,
+                    y: 0.5,
+                    z: 0.5,
+                },
+                Point3 {
+                    x: 0.5,
+                    y: 0.5,
+                    z: 0.5,
+                },
+                Point3 {
+                    x: 0.5,
+                    y: 0.5,
+                    z: -0.5,
+                },
+                Point3 {
+                    x: -0.5,
+                    y: 0.5,
+                    z: -0.5,
+                },
+                Point3 {
+                    x: 0.5,
+                    y: -0.5,
+                    z: -0.5,
+                },
+                Point3 {
+                    x: 0.5,
+                    y: -0.5,
+                    z: 0.5,
+                },
+                Point3 {
+                    x: -0.5,
+                    y: -0.5,
+                    z: 0.5,
+                },
+                Point3 {
+                    x: -0.5,
+                    y: -0.5,
+                    z: -0.5,
+                },
+                Point3 {
+                    x: 0.5,
+                    y: -0.5,
+                    z: 0.5,
+                },
+                Point3 {
+                    x: 0.5,
+                    y: 0.5,
+                    z: 0.5,
+                },
+                Point3 {
+                    x: -0.5,
+                    y: 0.5,
+                    z: 0.5,
+                },
+                Point3 {
+                    x: -0.5,
+                    y: -0.5,
+                    z: 0.5,
+                },
+                Point3 {
+                    x: -0.5,
+                    y: -0.5,
+                    z: -0.5,
+                },
+                Point3 {
+                    x: -0.5,
+                    y: 0.5,
+                    z: -0.5,
+                },
+                Point3 {
+                    x: 0.5,
+                    y: 0.5,
+                    z: -0.5,
+                },
+                Point3 {
+                    x: 0.5,
+                    y: -0.5,
+                    z: -0.5,
+                },
+            ],
+            normals: vec![
+                Vector3 {
+                    x: 1.0,
+                    y: 0.0,
+                    z: 0.0,
+                },
+                Vector3 {
+                    x: 1.0,
+                    y: 0.0,
+                    z: 0.0,
+                },
+                Vector3 {
+                    x: 1.0,
+                    y: 0.0,
+                    z: 0.0,
+                },
+                Vector3 {
+                    x: 1.0,
+                    y: 0.0,
+                    z: 0.0,
+                },
+                Vector3 {
+                    x: -1.0,
+                    y: 0.0,
+                    z: 0.0,
+                },
+                Vector3 {
+                    x: -1.0,
+                    y: 0.0,
+                    z: 0.0,
+                },
+                Vector3 {
+                    x: -1.0,
+                    y: 0.0,
+                    z: 0.0,
+                },
+                Vector3 {
+                    x: -1.0,
+                    y: 0.0,
+                    z: 0.0,
+                },
+                Vector3 {
+                    x: 0.0,
+                    y: 1.0,
+                    z: 0.0,
+                },
+                Vector3 {
+                    x: 0.0,
+                    y: 1.0,
+                    z: 0.0,
+                },
+                Vector3 {
+                    x: 0.0,
+                    y: 1.0,
+                    z: 0.0,
+                },
+                Vector3 {
+                    x: 0.0,
+                    y: 1.0,
+                    z: 0.0,
+                },
+                Vector3 {
+                    x: 0.0,
+                    y: -1.0,
+                    z: 0.0,
+                },
+                Vector3 {
+                    x: 0.0,
+                    y: -1.0,
+                    z: 0.0,
+                },
+                Vector3 {
+                    x: 0.0,
+                    y: -1.0,
+                    z: 0.0,
+                },
+                Vector3 {
+                    x: 0.0,
+                    y: -1.0,
+                    z: 0.0,
+                },
+                Vector3 {
+                    x: 0.0,
+                    y: 0.0,
+                    z: 1.0,
+                },
+                Vector3 {
+                    x: 0.0,
+                    y: 0.0,
+                    z: 1.0,
+                },
+                Vector3 {
+                    x: 0.0,
+                    y: 0.0,
+                    z: 1.0,
+                },
+                Vector3 {
+                    x: 0.0,
+                    y: 0.0,
+                    z: 1.0,
+                },
+                Vector3 {
+                    x: 0.0,
+                    y: 0.0,
+                    z: -1.0,
+                },
+                Vector3 {
+                    x: 0.0,
+                    y: 0.0,
+                    z: -1.0,
+                },
+                Vector3 {
+                    x: 0.0,
+                    y: 0.0,
+                    z: -1.0,
+                },
+                Vector3 {
+                    x: 0.0,
+                    y: 0.0,
+                    z: -1.0,
+                },
+            ],
+            tangents: vec![],
+        },
+        tex_coords: vec![
+            blue, green, red, purple, red, purple, blue, green, red, green, blue, purple, red,
+            green, blue, purple, red, green, blue, purple, red, green, blue, purple,
+        ],
+        faces: vec![
+            [0, 1, 2],
+            [2, 3, 0],
+            [4, 5, 6],
+            [6, 7, 4],
+            [8, 9, 10],
+            [10, 11, 8],
+            [12, 13, 14],
+            [14, 15, 12],
+            [16, 17, 18],
+            [18, 19, 16],
+            [20, 21, 22],
+            [22, 23, 20],
+        ],
+        joints: Joints {
+            indices: vec![],
+            weights: vec![],
+        },
+        shapes: vec![],
     }
 }
