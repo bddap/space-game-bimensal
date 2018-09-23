@@ -7,12 +7,23 @@ pub struct Space {
 
 impl Space {
     pub fn get_voxel(&self, position: ::position::Position) -> ::voxel::Voxel {
-        let within = |x| x >= 0 && x < 16;
-        if within(position.x) && within(position.y) && within(position.z) {
+        if self.exists(position) {
             self.chunk[position.x as usize][position.y as usize][position.z as usize]
         } else {
             ::voxel::Voxel::Vacuum
         }
+    }
+
+    fn set_voxel(&mut self, position: ::position::Position, voxel: ::voxel::Voxel) {
+        if self.exists(position) {
+            let ::position::Position { x, y, z } = position;
+            self.chunk[x as usize][y as usize][z as usize] = voxel;
+        }
+    }
+
+    fn exists(&self, position: ::position::Position) -> bool {
+        let within = |x| x >= 0 && x < 16;
+        within(position.x) && within(position.y) && within(position.z)
     }
 
     pub fn update(&mut self) {
@@ -26,17 +37,23 @@ impl Space {
             ::voxel::Displacement::Down,
         ];
 
-        for x in 0..16 {
-            for y in 0..16 {
-                for z in 0..16 {
-                    self.chunk[x][y][z] = neighbors
+        for x in 0..16i32 {
+            for y in 0..16i32 {
+                for z in 0..16i32 {
+                    let here = ::position::Position {
+                        x: x as i32,
+                        y: y as i32,
+                        z: z as i32,
+                    };
+                    let me = self.get_voxel(here);
+                    let next_me = neighbors
                         .iter()
                         .filter_map(|&displacement| {
-                            let neighbor = self.get_voxel(displacement.into());
-                            neighbor.impose(self.chunk[x][y][z], displacement)
-                        })
-                        .max()
-                        .unwrap_or(self.chunk[x][y][z])
+                            let neighbor_position = here + displacement.into();
+                            let neighbor = self.get_voxel(neighbor_position);
+                            neighbor.impose(me, displacement)
+                        }).fold(me, ::voxel::Voxel::combine);
+                    self.set_voxel(here, next_me);
                 }
             }
         }

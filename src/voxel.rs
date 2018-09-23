@@ -1,13 +1,23 @@
-#[derive(PartialEq, Copy, Clone, Ord, PartialOrd, Eq)]
+#[derive(PartialEq, Copy, Clone, Ord, PartialOrd, Eq, Debug)]
 pub enum Voxel {
     Asteroid,
     Vacuum,
 }
 
+use self::Voxel as V;
+
 impl Voxel {
     pub fn impose(&self, other: Voxel, from: Displacement) -> Option<Voxel> {
         match (*self, other, from) {
             _ => None,
+        }
+    }
+
+    pub fn combine(self, other: Voxel) -> Voxel {
+        match (self, other) {
+            (V::Asteroid, V::Vacuum) | (V::Vacuum, V::Asteroid) => V::Asteroid,
+            (V::Asteroid, V::Asteroid) => V::Asteroid,
+            (V::Vacuum, V::Vacuum) => V::Vacuum,
         }
     }
 }
