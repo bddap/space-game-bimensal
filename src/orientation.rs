@@ -60,13 +60,15 @@ impl Into<mint::Quaternion<f32>> for Orientation {
             VerticalOrientation::Up => ::direction::Direction::Up,
             VerticalOrientation::Center => ::direction::Direction::North,
             VerticalOrientation::Down => ::direction::Direction::Down,
-        }.into();
+        }
+        .into();
         let hori: mint::Quaternion<f32> = match self.horizontal {
             HorizontalOrientation::North => ::direction::Direction::North,
             HorizontalOrientation::South => ::direction::Direction::South,
             HorizontalOrientation::East => ::direction::Direction::East,
             HorizontalOrientation::West => ::direction::Direction::West,
-        }.into();
+        }
+        .into();
         to_mint(to_cgmath(vert) * to_cgmath(hori))
     }
 }

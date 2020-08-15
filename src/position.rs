@@ -47,7 +47,8 @@ impl Position {
             H::South => [-x, y, -z],
             H::East => [z, y, -x],
             H::West => [-z, y, x],
-        }.into()
+        }
+        .into()
     }
 
     fn vertical_turn(&self, orientation: ::orientation::VerticalOrientation) -> Position {
@@ -57,7 +58,8 @@ impl Position {
             V::Center => [x, y, z],
             V::Up => [x, -z, y],
             V::Down => [x, z, -y],
-        }.into()
+        }
+        .into()
     }
 
     // pub fn turn(&self, direction: ::direction::Direction) -> Position {

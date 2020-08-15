@@ -52,7 +52,8 @@ impl Space {
                             let neighbor_position = here + displacement.into();
                             let neighbor = self.get_voxel(neighbor_position);
                             neighbor.impose(me, displacement)
-                        }).fold(me, ::voxel::Voxel::combine);
+                        })
+                        .fold(me, ::voxel::Voxel::combine);
                     self.set_voxel(here, next_me);
                 }
             }

@@ -37,7 +37,8 @@ impl Human {
                 let cube = window.factory.mesh(geometry.clone(), material.clone());
                 cube.set_position([x as f32, y as f32, z as f32]);
                 cube
-            }).collect();
+            })
+            .collect();
 
         for cube in cubes.iter() {
             window.scene.add(cube);
@@ -129,7 +130,8 @@ impl Sprites {
                         .factory
                         .load_texture_with_sampler(assets.join("asteroid.png"), sampler),
                 ),
-            }.into(),
+            }
+            .into(),
         }
     }
 }
